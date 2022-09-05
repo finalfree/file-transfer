@@ -1,8 +1,10 @@
 package service
 
 import (
+	"fmt"
 	"net"
 	"net/http"
+	"time"
 )
 
 func GetIpFromRequest(r *http.Request) string {
@@ -14,4 +16,8 @@ func GetIpFromRequest(r *http.Request) string {
 		}
 	}
 	return realIp
+}
+
+func PrintSenderAndTime(r *http.Request) {
+	fmt.Println(GetIpFromRequest(r), time.Now())
 }

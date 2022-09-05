@@ -12,6 +12,7 @@ import (
 func main() {
 	fmt.Println("Hello, Carl!\nHttp Server is running!")
 
+	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/ip", api.GetIpHandler)
 	http.HandleFunc("/shortMessage", api.ShortMessageHandler)
 	http.HandleFunc("/upload", api.UploadFileHandler)

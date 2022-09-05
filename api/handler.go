@@ -6,7 +6,6 @@ import (
 	"io"
 	"lighten.top/lightning/api/service"
 	"net/http"
-	"time"
 )
 
 const MaxFileSize int64 = 2 * 1024 * 1024
@@ -20,7 +19,7 @@ func GetIpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ShortMessageHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(time.Now())
+	service.PrintSenderAndTime(r)
 	b, _ := io.ReadAll(r.Body)
 	fmt.Println(string(b))
 	w.Write(nil)
@@ -34,7 +33,14 @@ func UploadFileHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	// 2. visit files in form
+
+	// 2. output text
+	service.PrintSenderAndTime(r)
+	for _, text := range r.MultipartForm.Value["text"] {
+		fmt.Println(text)
+	}
+
+	// 3. visit files in form
 	for _, files := range r.MultipartForm.File {
 		for _, file := range files {
 			err := service.WriteRequestFileToLocal(file)
@@ -43,4 +49,7 @@ func UploadFileHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+
+	//redirect to home page
+	http.Redirect(w, r, "/", http.StatusFound)
 }
